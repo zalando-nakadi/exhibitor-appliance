@@ -1,0 +1,104 @@
+SenzaComponents:
+- Configuration:
+    Type: Senza::StupsAutoConfiguration
+- AppServer:
+    IamRoles:
+    - Ref: ExhibitorRole
+    InstanceType: t2.micro
+    ElasticLoadBalancer: ExhibitorLoadBalancer
+    HealthCheckType: EC2
+    SecurityGroups:
+    - "{{Arguments.SecurityGroup}}"
+    TaupageConfig:
+      ports:
+        2181: 2181
+        2888: 2888
+        3888: 3888
+        8181: 8181
+      runtime: Docker
+      source: "{{Arguments.DockerImage}}"
+      root: True
+      environment:
+        S3_BUCKET: "acid-exhibitor-app"
+        S3_PREFIX: "{{Arguments.version}}"
+      mint_bucket: "{{Arguments.MintBucket}}"
+      scalyr_account_key: "{{Arguments.ScalyrAccountKey}}"
+    Type: Senza::TaupageAutoScalingGroup
+    AutoScaling:
+        Minimum: 3
+        Maximum: 3
+        MetricType: CPU
+SenzaInfo:
+  StackName: acid-exhibitor
+  Parameters:
+  - DockerImage:
+      Description: Docker image of exhibitor
+  - SecurityGroup:
+      Description: Security group ID
+  - HostedZone:
+      Description: AWS Hosted Zone to work with
+  - ExhibitorBucket:
+      Description: S3 bucket for exhibitor (to store shared configuration and backups)
+  - MintBucket:
+      Description: The mint S3 bucket for OAuth 2.0 credentials
+  - ScalyrAccountKey:
+      Description: scalyr account key
+Resources:
+  ExhibitorRoute53Record:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Type: CNAME
+      TTL: 20
+      HostedZoneName: "{{Arguments.HostedZone}}"
+      Name: "{{Arguments.version}}.exhibitor.{{Arguments.HostedZone}}"
+      ResourceRecords:
+      - Fn::GetAtt:
+        - ExhibitorLoadBalancer
+        - DNSName
+  ExhibitorLoadBalancer:
+    Type: AWS::ElasticLoadBalancing::LoadBalancer
+    Properties:
+      CrossZone: true
+      HealthCheck:
+        HealthyThreshold: 3
+        Interval: 30
+        Target: HTTP:8181/exhibitor/v1/cluster/state
+        Timeout: 5
+        UnhealthyThreshold: 5
+      Listeners:
+      - InstancePort: 8181
+        LoadBalancerPort: 80
+        Protocol: TCP
+      LoadBalancerName: "exhibitor-{{Arguments.version}}"
+      SecurityGroups:
+      - "{{Arguments.SecurityGroup}}"
+      Scheme: internal
+      Subnets:
+        Fn::FindInMap:
+        - LoadBalancerSubnets
+        - Ref: AWS::Region
+        - Subnets
+  ExhibitorRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: ec2.amazonaws.com
+          Action: sts:AssumeRole
+      Path: /
+      Policies:
+      - PolicyName: S3Access
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Effect: Allow
+            Action: s3:*
+            Resource:
+            - "arn:aws:s3:::{{Arguments.ExhibitorBucket}}"
+            - "arn:aws:s3:::{{Arguments.ExhibitorBucket}}/*"
+          - Effect: Allow
+            Action: "s3:GetObject"
+            Resource: ["arn:aws:s3:::{{Arguments.MintBucket}}/*"]
