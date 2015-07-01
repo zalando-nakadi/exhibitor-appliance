@@ -33,6 +33,6 @@ Docs: http://docs.stups.io/en/latest/components/yourturn.html
 senza create exhibitor-appliance.yaml <STACK_VERSION> <DOCKER_IMAGE> $GROUP_ID <HOSTED_ZONE> $S3_BUCKET <MINT_BUCKET> <SCALYR_KEY>
 ```
 
-Cloudformation stack will start 3 EC2 instances in autoscaling group and create internal load balancer in front of EC2 instances. Also it will create DNS record "<STACK_VERSION>.exhibitor.<HOSTED_ZONE>" which points to a load balancer.
+Cloudformation stack will start 3 EC2 instances in autoscaling group and create internal load balancer in front of EC2 instances. Also it will create DNS record ```"<STACK_VERSION>.exhibitor.<HOSTED_ZONE>"``` which points to a load balancer.
 
 Exhibitor provides [rest-api](https://github.com/Netflix/exhibitor/wiki/REST-Introduction) which could be accessd via: ```http://<STACK_VERSION>.exhibitor.<HOSTED_ZONE>/exhibitor/v1/```
