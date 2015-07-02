@@ -3,12 +3,12 @@ SenzaComponents:
     Type: Senza::StupsAutoConfiguration
 - AppServer:
     IamRoles:
-    - Ref: ExhibitorRole
+      - Ref: ExhibitorRole
     InstanceType: t2.micro
     ElasticLoadBalancer: ExhibitorLoadBalancer
-    HealthCheckType: EC2
+    HealthCheckType: ELB
     SecurityGroups:
-    - "{{Arguments.SecurityGroup}}"
+      - "{{Arguments.SecurityGroup}}"
     TaupageConfig:
       ports:
         2181: 2181
@@ -19,7 +19,7 @@ SenzaComponents:
       source: "{{Arguments.DockerImage}}"
       root: True
       environment:
-        S3_BUCKET: "acid-exhibitor-app"
+        S3_BUCKET: "{{Arguments.ExhibitorBucket}}"
         S3_PREFIX: "{{Arguments.version}}"
       mint_bucket: "{{Arguments.MintBucket}}"
       scalyr_account_key: "{{Arguments.ScalyrAccountKey}}"
