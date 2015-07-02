@@ -9,7 +9,7 @@ docker build -t <tag> .
 
 ###### Create S3 bucket
 ```
-S3_BUCKET="exhibitor-app"
+S3_BUCKET="exhibitor-bucket"
 aws s3 mb s3://$S3_BUCKET
 ```
 
@@ -25,7 +25,7 @@ senza create exhibitor-appliance.yaml <STACK_VERSION> <APPLICATION_ID> <DOCKER_I
 
 A real world example would be:
 ```
-senza create exhibitor-appliance.yaml 1 saiki-exhibitor pierone.example.org/myteam/exhibitor:0.1-SNAPSHOT example.org. exhibitor-app example-stups-mint-some_id-eu-west-1 some_scalyr_key --region eu-west-1
+senza create exhibitor-appliance.yaml 1 saiki-exhibitor pierone.example.org/myteam/exhibitor:0.1-SNAPSHOT example.org. exhibitor-bucket example-stups-mint-some_id-eu-west-1 some_scalyr_key --region eu-west-1
 ```
 
 Cloudformation stack will start 3 EC2 instances in autoscaling group and create internal load balancer in front of EC2 instances. Also it will create DNS record ```"<STACK_NAME>-<STACK_VERSION>.<HOSTED_ZONE>"``` which points to a load balancer.
