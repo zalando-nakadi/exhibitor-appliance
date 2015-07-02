@@ -19,7 +19,7 @@ SenzaComponents:
       source: "{{Arguments.DockerImage}}"
       root: True
       environment:
-        S3_BUCKET: "acid-exhibitor-app"
+        S3_BUCKET: "{{Arguments.ExhibitorBucket}}"
         S3_PREFIX: "{{Arguments.version}}"
       mint_bucket: "{{Arguments.MintBucket}}"
       scalyr_account_key: "{{Arguments.ScalyrAccountKey}}"
