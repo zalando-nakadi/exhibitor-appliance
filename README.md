@@ -25,7 +25,7 @@ S3_BUCKET="exhibitor-app"
 aws s3 mb s3://$S3_BUCKET
 ```
 
-###### Register appliance in YourTourn
+###### Register appliance in YOUR TURN
 Docs: http://docs.stups.io/en/latest/components/yourturn.html
 
 ###### Deploy with Senza
