@@ -36,7 +36,7 @@ SenzaComponents:
       root: True
       environment:
         S3_BUCKET: "{{Arguments.ExhibitorBucket}}"
-        S3_PREFIX: "{{Arguments.version}}"
+        S3_PREFIX: "{{SenzaInfo.StackName}}-{{Arguments.version}}"
       mint_bucket: "{{Arguments.MintBucket}}"
       scalyr_account_key: "{{Arguments.ScalyrAccountKey}}"
     Type: Senza::TaupageAutoScalingGroup
