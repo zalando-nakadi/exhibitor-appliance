@@ -1,3 +1,18 @@
+SenzaInfo:
+  StackName: acid-exhibitor
+  Parameters:
+    - ApplicationID:
+        Description: "The Application Id which got registered for exhibitor in Yourturn/Kio."
+    - DockerImage:
+        Description: "Docker image of exhibitor."
+    - HostedZone:
+        Description: "AWS Hosted Zone to work with."
+    - ExhibitorBucket:
+        Description: "S3 bucket for exhibitor (to store shared configuration and backups)."
+    - MintBucket:
+        Description: "The mint S3 bucket for OAuth 2.0 credentials."
+    - ScalyrAccountKey:
+        Description: "scalyr account key."
 SenzaComponents:
 - Configuration:
     Type: Senza::StupsAutoConfiguration
@@ -8,19 +23,20 @@ SenzaComponents:
     ElasticLoadBalancer: ExhibitorLoadBalancer
     HealthCheckType: ELB
     SecurityGroups:
-      - "{{Arguments.SecurityGroup}}"
+      - "Fn::GetAtt" : [ "ExhibitorSecGroup" , "GroupId" ]
     TaupageConfig:
+      application_id: "{{Arguments.ApplicationID}}"
+      runtime: Docker
+      source: "{{Arguments.DockerImage}}"
       ports:
         2181: 2181
         2888: 2888
         3888: 3888
         8181: 8181
-      runtime: Docker
-      source: "{{Arguments.DockerImage}}"
       root: True
       environment:
         S3_BUCKET: "{{Arguments.ExhibitorBucket}}"
-        S3_PREFIX: "{{Arguments.version}}"
+        S3_PREFIX: "{{SenzaInfo.StackName}}-{{Arguments.version}}"
       mint_bucket: "{{Arguments.MintBucket}}"
       scalyr_account_key: "{{Arguments.ScalyrAccountKey}}"
     Type: Senza::TaupageAutoScalingGroup
@@ -28,21 +44,6 @@ SenzaComponents:
         Minimum: 3
         Maximum: 3
         MetricType: CPU
-SenzaInfo:
-  StackName: acid-exhibitor
-  Parameters:
-  - DockerImage:
-      Description: Docker image of exhibitor
-  - SecurityGroup:
-      Description: Security group ID
-  - HostedZone:
-      Description: AWS Hosted Zone to work with
-  - ExhibitorBucket:
-      Description: S3 bucket for exhibitor (to store shared configuration and backups)
-  - MintBucket:
-      Description: The mint S3 bucket for OAuth 2.0 credentials
-  - ScalyrAccountKey:
-      Description: scalyr account key
 Resources:
   ExhibitorRoute53Record:
     Type: AWS::Route53::RecordSet
@@ -50,7 +51,7 @@ Resources:
       Type: CNAME
       TTL: 20
       HostedZoneName: "{{Arguments.HostedZone}}"
-      Name: "{{Arguments.version}}.exhibitor.{{Arguments.HostedZone}}"
+      Name: "{{SenzaInfo.StackName}}-{{Arguments.version}}.{{Arguments.HostedZone}}"
       ResourceRecords:
       - Fn::GetAtt:
         - ExhibitorLoadBalancer
@@ -58,6 +59,7 @@ Resources:
   ExhibitorLoadBalancer:
     Type: AWS::ElasticLoadBalancing::LoadBalancer
     Properties:
+      LoadBalancerName: "{{SenzaInfo.StackName}}-{{Arguments.version}}"
       CrossZone: true
       HealthCheck:
         HealthyThreshold: 3
@@ -69,10 +71,12 @@ Resources:
       - InstancePort: 8181
         LoadBalancerPort: 80
         Protocol: TCP
-      LoadBalancerName: "exhibitor-{{Arguments.version}}"
+      - InstancePort: 2181
+        LoadBalancerPort: 2181
+        Protocol: TCP
       SecurityGroups:
-      - "{{Arguments.SecurityGroup}}"
-      Scheme: internal
+      - "Fn::GetAtt" : [ "ExhibitorSecGroup" , "GroupId" ]
+      Scheme: internet-facing
       Subnets:
         Fn::FindInMap:
         - LoadBalancerSubnets
@@ -101,4 +105,33 @@ Resources:
             - "arn:aws:s3:::{{Arguments.ExhibitorBucket}}/*"
           - Effect: Allow
             Action: "s3:GetObject"
-            Resource: ["arn:aws:s3:::{{Arguments.MintBucket}}/*"]
+            Resource: ["arn:aws:s3:::{{Arguments.MintBucket}}/{{Arguments.ApplicationID}}/*"]
+  ExhibitorSecGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Exhibitor Appliance Security Group"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 2181
+          ToPort: 2181
+          CidrIp: "0.0.0.0/0"
+        - IpProtocol: tcp
+          FromPort: 2888
+          ToPort: 2888
+          CidrIp: "0.0.0.0/0"
+        - IpProtocol: tcp
+          FromPort: 3888
+          ToPort: 3888
+          CidrIp: "0.0.0.0/0"
+        - IpProtocol: tcp
+          FromPort: 8181
+          ToPort: 8181
+          CidrIp: "0.0.0.0/0"
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: "0.0.0.0/0"
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: "0.0.0.0/0"
