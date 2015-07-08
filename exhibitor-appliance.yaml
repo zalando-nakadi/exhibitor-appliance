@@ -74,12 +74,6 @@ Resources:
       - InstancePort: 2181
         LoadBalancerPort: 2181
         Protocol: TCP
-      - InstancePort: 2888
-        LoadBalancerPort: 2888
-        Protocol: TCP
-      - InstancePort: 3888
-        LoadBalancerPort: 3888
-        Protocol: TCP
       SecurityGroups:
       - "Fn::GetAtt" : [ "ExhibitorSecGroup" , "GroupId" ]
       Scheme: internet-facing
