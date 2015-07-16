@@ -1,5 +1,5 @@
 SenzaInfo:
-  StackName: acid-exhibitor
+  StackName: exhibitor
   Parameters:
     - ApplicationID:
         Description: The Application Id which got registered for exhibitor in Yourturn/Kio.
@@ -53,7 +53,7 @@ Resources:
       Type: CNAME
       TTL: 20
       HostedZoneName: "{{Arguments.HostedZone}}"
-      Name: "{{Arguments.version}}.exhibitor.{{Arguments.HostedZone}}"
+      Name: "{{Arguments.ApplicationID}}-{{Arguments.version}}.{{Arguments.HostedZone}}"
       ResourceRecords:
         - Fn::GetAtt:
             - ExhibitorLoadBalancer
