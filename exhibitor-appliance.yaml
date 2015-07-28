@@ -7,6 +7,8 @@ SenzaInfo:
         Description: Docker image of exhibitor
     - HostedZone:
         Description: AWS Hosted Zone to work with
+    - AvailabilityZones:
+        Description: AWS Availablity Zones to start instances in
     - ExhibitorBucket:
         Description: S3 bucket for exhibitor (to store shared configuration and backups)
     - MintBucket:
@@ -16,6 +18,8 @@ SenzaInfo:
 SenzaComponents:
   - Configuration:
       Type: Senza::StupsAutoConfiguration
+      AvailabilityZones: [eu-west-1a]
+
   - AppServer:
       IamRoles:
         - Ref: ExhibitorRole
