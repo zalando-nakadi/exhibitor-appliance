@@ -9,10 +9,14 @@ SenzaInfo:
         Description: AWS Hosted Zone to work with
     - ExhibitorBucket:
         Description: S3 bucket for exhibitor (to store shared configuration and backups)
+    - ExhibitorBucketConfigVersion:
+        Description: Config version separating different configurations in S3 bucket for exhibitor (to store shared configuration and backups)
     - MintBucket:
         Description: The mint S3 bucket for OAuth 2.0 credentials
     - ScalyrAccountKey:
         Description: Scalyr account key
+    - AppDynamicsApp:
+        Description: AppDynamics application name
 SenzaComponents:
   - Configuration:
       Type: Senza::StupsAutoConfiguration
@@ -38,9 +42,10 @@ SenzaComponents:
         root: True
         environment:
           S3_BUCKET: "{{Arguments.ExhibitorBucket}}"
-          S3_PREFIX: "{{Arguments.version}}"
+          S3_PREFIX: "{{Arguments.ExhibitorBucketConfigVersion}}"
         mint_bucket: "{{Arguments.MintBucket}}"
         scalyr_account_key: "{{Arguments.ScalyrAccountKey}}"
+        appdynamics_application: "{{Arguments.AppDynamicsApp}}"
       Type: Senza::TaupageAutoScalingGroup
       AutoScaling:
         Minimum: 3

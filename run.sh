@@ -15,7 +15,8 @@ fi
 
 exec 2>&1
 
-java -jar /opt/exhibitor/exhibitor.jar \
+java -javaagent:/agents/appdynamics-jvm/javaagent.jar -Dappdynamics.agent.uniqueHostId=$(cat /agents/appdynamics-jvm/uniqueHostId) \
+  -jar /opt/exhibitor/exhibitor.jar \
   --port 8181 --defaultconfig exhibitor.conf \
   --configtype s3 --s3config ${S3_BUCKET}:${S3_PREFIX} \
   --s3region ${AWS_REGION} --s3backup true \
