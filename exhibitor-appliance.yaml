@@ -2,47 +2,47 @@ SenzaInfo:
   StackName: exhibitor
   Parameters:
     - ApplicationID:
-        Description: The Application Id which got registered for exhibitor in Yourturn/Kio.
+        Description: "The Application Id which got registered for exhibitor in Yourturn/Kio."
     - DockerImage:
-        Description: Docker image of exhibitor
+        Description: "Docker image of exhibitor."
     - HostedZone:
-        Description: AWS Hosted Zone to work with
+        Description: "AWS Hosted Zone to work with."
     - ExhibitorBucket:
-        Description: S3 bucket for exhibitor (to store shared configuration and backups)
+        Description: "S3 bucket for exhibitor (to store shared configuration and backups)."
     - MintBucket:
-        Description: The mint S3 bucket for OAuth 2.0 credentials
+        Description: "The mint S3 bucket for OAuth 2.0 credentials."
     - ScalyrAccountKey:
-        Description: Scalyr account key
+        Description: "scalyr account key."
 SenzaComponents:
-  - Configuration:
-      Type: Senza::StupsAutoConfiguration
-  - AppServer:
-      IamRoles:
-        - Ref: ExhibitorRole
-      InstanceType: t2.micro
-      ElasticLoadBalancer: ExhibitorLoadBalancer
-      HealthCheckType: ELB
-      SecurityGroups:
-        - Fn::GetAtt:
-            - ExhibitorSecurityGroup
-            - GroupId
-      TaupageConfig:
-        application_id: "{{Arguments.ApplicationID}}"
-        runtime: Docker
-        source: "{{Arguments.DockerImage}}"
-        ports:
-          2181: 2181
-          2888: 2888
-          3888: 3888
-          8181: 8181
-        root: True
-        environment:
-          S3_BUCKET: "{{Arguments.ExhibitorBucket}}"
-          S3_PREFIX: "{{Arguments.version}}"
-        mint_bucket: "{{Arguments.MintBucket}}"
-        scalyr_account_key: "{{Arguments.ScalyrAccountKey}}"
-      Type: Senza::TaupageAutoScalingGroup
-      AutoScaling:
+- Configuration:
+    Type: Senza::StupsAutoConfiguration
+- AppServer:
+    IamRoles:
+      - Ref: ExhibitorRole
+    InstanceType: t2.medium
+    ElasticLoadBalancer: ExhibitorLoadBalancer
+    HealthCheckType: ELB
+    SecurityGroups:
+      - "Fn::GetAtt" : [ "ExhibitorSecGroup" , "GroupId" ]
+    TaupageConfig:
+      application_id: "{{Arguments.ApplicationID}}"
+      runtime: Docker
+      source: "{{Arguments.DockerImage}}"
+      ports:
+        2181: 2181
+        2888: 2888
+        3888: 3888
+        8181: 8181
+      root: True
+      environment:
+        S3_BUCKET: "{{Arguments.ExhibitorBucket}}"
+        S3_PREFIX: "{{SenzaInfo.StackName}}-{{Arguments.version}}"
+        SCALYR_ACCOUNT_KEY: '{{Arguments.ScalyrAccountKey}}'
+        SCALYR_LOGS: '/opt/zookeeper/zookeeper.out'
+      mint_bucket: "{{Arguments.MintBucket}}"
+      scalyr_account_key: "{{Arguments.ScalyrAccountKey}}"
+    Type: Senza::TaupageAutoScalingGroup
+    AutoScaling:
         Minimum: 3
         Maximum: 3
         MetricType: CPU
@@ -53,39 +53,15 @@ Resources:
       Type: CNAME
       TTL: 20
       HostedZoneName: "{{Arguments.HostedZone}}"
-      Name: "{{Arguments.ApplicationID}}-{{Arguments.version}}.{{Arguments.HostedZone}}"
+      Name: "{{SenzaInfo.StackName}}-{{Arguments.version}}.{{Arguments.HostedZone}}"
       ResourceRecords:
-        - Fn::GetAtt:
-            - ExhibitorLoadBalancer
-            - DNSName
-  ExhibitorSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Exhibitor Appliance Security Group
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 22
-          ToPort: 22
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: 2181
-          ToPort: 2181
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: 2888
-          ToPort: 2888
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: 3888
-          ToPort: 3888
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: 8181
-          ToPort: 8181
-          CidrIp: 0.0.0.0/0
+      - Fn::GetAtt:
+        - ExhibitorLoadBalancer
+        - DNSName
   ExhibitorLoadBalancer:
     Type: AWS::ElasticLoadBalancing::LoadBalancer
     Properties:
+      LoadBalancerName: "{{SenzaInfo.StackName}}-{{Arguments.version}}"
       CrossZone: true
       HealthCheck:
         HealthyThreshold: 3
@@ -94,45 +70,70 @@ Resources:
         Timeout: 5
         UnhealthyThreshold: 5
       Listeners:
-        - InstancePort: 8181
-          LoadBalancerPort: 8181
-          Protocol: TCP
-        - InstancePort: 2181
-          LoadBalancerPort: 2181
-          Protocol: TCP
-      LoadBalancerName: exhibitor-{{Arguments.version}}
+      - InstancePort: 8181
+        LoadBalancerPort: 80
+        Protocol: TCP
+      - InstancePort: 2181
+        LoadBalancerPort: 2181
+        Protocol: TCP
       SecurityGroups:
-        - Fn::GetAtt:
-            - ExhibitorSecurityGroup
-            - GroupId
-      Scheme: internal
+      - "Fn::GetAtt" : [ "ExhibitorSecGroup" , "GroupId" ]
+      Scheme: internet-facing
       Subnets:
         Fn::FindInMap:
-          - LoadBalancerSubnets
-          - Ref: AWS::Region
-          - Subnets
+        - LoadBalancerSubnets
+        - Ref: AWS::Region
+        - Subnets
   ExhibitorRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
-          - Effect: Allow
-            Principal:
-              Service: ec2.amazonaws.com
-            Action: sts:AssumeRole
+        - Effect: Allow
+          Principal:
+            Service: ec2.amazonaws.com
+          Action: sts:AssumeRole
       Path: /
       Policies:
-        - PolicyName: S3Access
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action: s3:*
-                Resource:
-                  - "arn:aws:s3:::{{Arguments.ExhibitorBucket}}"
-                  - "arn:aws:s3:::{{Arguments.ExhibitorBucket}}/*"
-              - Effect: Allow
-                Action: s3:GetObject
-                Resource:
-                  - "arn:aws:s3:::{{Arguments.MintBucket}}/{{Arguments.ApplicationID}}/*"
+      - PolicyName: S3Access
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Effect: Allow
+            Action: s3:*
+            Resource:
+            - "arn:aws:s3:::{{Arguments.ExhibitorBucket}}"
+            - "arn:aws:s3:::{{Arguments.ExhibitorBucket}}/*"
+          - Effect: Allow
+            Action: "s3:GetObject"
+            Resource: ["arn:aws:s3:::{{Arguments.MintBucket}}/{{Arguments.ApplicationID}}/*"]
+  ExhibitorSecGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Exhibitor Appliance Security Group"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 2181
+          ToPort: 2181
+          CidrIp: "0.0.0.0/0"
+        - IpProtocol: tcp
+          FromPort: 2888
+          ToPort: 2888
+          CidrIp: "0.0.0.0/0"
+        - IpProtocol: tcp
+          FromPort: 3888
+          ToPort: 3888
+          CidrIp: "0.0.0.0/0"
+        - IpProtocol: tcp
+          FromPort: 8181
+          ToPort: 8181
+          CidrIp: "0.0.0.0/0"
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: "0.0.0.0/0"
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: "0.0.0.0/0"

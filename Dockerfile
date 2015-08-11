@@ -40,9 +40,19 @@ ADD web.xml /opt/exhibitor/web.xml
 ADD run.sh /opt/exhibitor/run.sh
 ADD exhibitor.conf.tmpl /opt/exhibitor/exhibitor.conf.tmpl
 
+RUN apt-get update
+RUN apt-get install -y --force-yes wget apt-transport-https python
+RUN wget -q https://www.scalyr.com/scalyr-repo/stable/latest/scalyr-agent-2.0.11.tar.gz
+RUN tar -zxf scalyr-agent-2.0.11.tar.gz -C /tmp
+RUN rm scalyr-agent-2.0.11.tar.gz
+ENV PATH=/tmp/scalyr-agent-2.0.11/bin:$PATH
+RUN chmod -R 777 /tmp/scalyr-agent-2.0.11/
+ADD scalyr_startup.sh /tmp/scalyr_startup.sh
+RUN chmod 777 /tmp/scalyr_startup.sh
+
 WORKDIR ${HOME}
 USER ${USER}
 
 EXPOSE 2181 2888 3888 8181
 
-ENTRYPOINT ["bash", "-ex", "/opt/exhibitor/run.sh"]
+CMD /tmp/scalyr_startup.sh && bash -ex /opt/exhibitor/run.sh
