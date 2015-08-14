@@ -1,5 +1,5 @@
 SenzaInfo:
-  StackName: acid-exhibitor
+  StackName: exhibitor
   Parameters:
     - ApplicationID:
         Description: "The Application Id which got registered for exhibitor in Yourturn/Kio."
@@ -19,7 +19,7 @@ SenzaComponents:
 - AppServer:
     IamRoles:
       - Ref: ExhibitorRole
-    InstanceType: t2.micro
+    InstanceType: t2.medium
     ElasticLoadBalancer: ExhibitorLoadBalancer
     HealthCheckType: ELB
     SecurityGroups:
@@ -37,6 +37,8 @@ SenzaComponents:
       environment:
         S3_BUCKET: "{{Arguments.ExhibitorBucket}}"
         S3_PREFIX: "{{SenzaInfo.StackName}}-{{Arguments.version}}"
+        SCALYR_ACCOUNT_KEY: '{{Arguments.ScalyrAccountKey}}'
+        SCALYR_LOGS: '/opt/zookeeper/zookeeper.out'
       mint_bucket: "{{Arguments.MintBucket}}"
       scalyr_account_key: "{{Arguments.ScalyrAccountKey}}"
     Type: Senza::TaupageAutoScalingGroup
