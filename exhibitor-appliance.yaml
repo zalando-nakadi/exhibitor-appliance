@@ -76,7 +76,7 @@ Resources:
         Protocol: TCP
       SecurityGroups:
       - "Fn::GetAtt" : [ "ExhibitorSecGroup" , "GroupId" ]
-      Scheme: internet-facing
+      Scheme: internal
       Subnets:
         Fn::FindInMap:
         - LoadBalancerSubnets
