@@ -13,6 +13,15 @@ if [[ -n ${ZK_PASSWORD} ]]; then
     echo "zk: ${ZK_PASSWORD},zk" > realm
 fi
 
+# send zookeeper log to stdout
+(
+    ZK_LOG=zookeeper.out
+    while true; do
+        [[ -f $ZK_LOG ]] && tailf $ZK_LOG
+        sleep 1
+    done
+) &
+
 exec 2>&1
 
 java -jar /opt/exhibitor/exhibitor.jar \
