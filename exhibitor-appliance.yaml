@@ -23,7 +23,7 @@ SenzaComponents:
   - AppServer:
       IamRoles:
         - Ref: ExhibitorRole
-      InstanceType: t2.micro
+      InstanceType: m3.medium
       ElasticLoadBalancer: ExhibitorLoadBalancer
       HealthCheckType: ELB
       SecurityGroups:
