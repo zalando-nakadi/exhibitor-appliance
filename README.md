@@ -22,6 +22,7 @@ Make sure that your got an unique ```APPLICATION_ID```
 ```
 senza create exhibitor-appliance.yaml <STACK_VERSION> ApplicationID=<APPLICATION_ID> DockerImage=<DOCKER_IMAGE_WITH_VERSION_TAG> HostedZone=<HOSTED_ZONE> ExhibitorBucket=$S3_BUCKET ExhibitorBucketConfigVersion=<CONFIG_VERSION> MintBucket=<MINT_BUCKET> ScalyrAccountKey=<SCALYR_KEY> AppDynamicsApp=<APPDYNAMICS_APP> [--region AWS_REGION]
 ```
+The parameter *AppDynamicsApp* is optional.
 
 A real world example would be:
 ```

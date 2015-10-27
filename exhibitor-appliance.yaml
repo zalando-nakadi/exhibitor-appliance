@@ -17,6 +17,7 @@ SenzaInfo:
         Description: Scalyr account key
     - AppDynamicsApp:
         Description: AppDynamics application name
+        Default: ""
 SenzaComponents:
   - Configuration:
       Type: Senza::StupsAutoConfiguration
@@ -43,6 +44,7 @@ SenzaComponents:
         environment:
           S3_BUCKET: "{{Arguments.ExhibitorBucket}}"
           S3_PREFIX: "{{Arguments.ExhibitorBucketConfigVersion}}"
+          APPDYNAMICS_APP: "{{Arguments.AppDynamicsApp}}"
         mint_bucket: "{{Arguments.MintBucket}}"
         scalyr_account_key: "{{Arguments.ScalyrAccountKey}}"
         appdynamics_application: "{{Arguments.AppDynamicsApp}}"

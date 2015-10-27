@@ -24,8 +24,17 @@ fi
 
 exec 2>&1
 
-java -javaagent:/agents/appdynamics-jvm/javaagent.jar -Dappdynamics.agent.uniqueHostId=$(cat /agents/appdynamics-jvm/uniqueHostId) \
-  -jar /opt/exhibitor/exhibitor.jar \
+APPDYNAMICS_PATH="/agents/appdynamics-jvm"
+APPDYNAMICS_AGENT="${APPDYNAMICS_PATH}/javaagent.jar"
+APPDYNAMICS_ID="${APPDYNAMICS_PATH}/uniqueHostId"
+
+if [[ -d ${APPDYNAMICS_PATH} && -n ${APPDYNAMICS_APP} ]]; then
+    JAVA="java -javaagent:${APPDYNAMICS_AGENT} -Dappdynamics.agent.uniqueHostId=$(cat ${APPDYNAMICS_ID})"
+else
+    JAVA="java"
+fi
+
+${JAVA} -jar /opt/exhibitor/exhibitor.jar \
   --port 8181 --defaultconfig exhibitor.conf \
   --configtype s3 --s3config ${S3_BUCKET}:${S3_PREFIX} \
   --s3region ${AWS_REGION} --s3backup true \
