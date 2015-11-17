@@ -1,16 +1,12 @@
 SenzaInfo:
   StackName: exhibitor
   Parameters:
-    - ApplicationID:
-        Description: The Application Id which got registered for exhibitor in Yourturn/Kio.
     - DockerImage:
         Description: Docker image of exhibitor
     - HostedZone:
         Description: AWS Hosted Zone to work with
     - ExhibitorBucket:
         Description: S3 bucket for exhibitor (to store shared configuration and backups)
-    - MintBucket:
-        Description: The mint S3 bucket for OAuth 2.0 credentials
     - ScalyrAccountKey:
         Description: Scalyr account key
 SenzaComponents:
@@ -27,7 +23,6 @@ SenzaComponents:
             - ExhibitorSecurityGroup
             - GroupId
       TaupageConfig:
-        application_id: "{{Arguments.ApplicationID}}"
         runtime: Docker
         source: "{{Arguments.DockerImage}}"
         ports:
@@ -39,7 +34,6 @@ SenzaComponents:
         environment:
           S3_BUCKET: "{{Arguments.ExhibitorBucket}}"
           S3_PREFIX: "{{Arguments.version}}"
-        mint_bucket: "{{Arguments.MintBucket}}"
         scalyr_account_key: "{{Arguments.ScalyrAccountKey}}"
       Type: Senza::TaupageAutoScalingGroup
       AutoScaling:
@@ -53,7 +47,7 @@ Resources:
       Type: CNAME
       TTL: 20
       HostedZoneName: "{{Arguments.HostedZone}}"
-      Name: "{{Arguments.ApplicationID}}-{{Arguments.version}}.{{Arguments.HostedZone}}"
+      Name: "exhibitor-{{Arguments.version}}.{{Arguments.HostedZone}}"
       ResourceRecords:
         - Fn::GetAtt:
             - ExhibitorLoadBalancer
@@ -97,9 +91,6 @@ Resources:
         - InstancePort: 8181
           LoadBalancerPort: 8181
           Protocol: TCP
-        - InstancePort: 2181
-          LoadBalancerPort: 2181
-          Protocol: TCP
       LoadBalancerName: exhibitor-{{Arguments.version}}
       SecurityGroups:
         - Fn::GetAtt:
@@ -132,7 +123,3 @@ Resources:
                 Resource:
                   - "arn:aws:s3:::{{Arguments.ExhibitorBucket}}"
                   - "arn:aws:s3:::{{Arguments.ExhibitorBucket}}/*"
-              - Effect: Allow
-                Action: s3:GetObject
-                Resource:
-                  - "arn:aws:s3:::{{Arguments.MintBucket}}/{{Arguments.ApplicationID}}/*"
