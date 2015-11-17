@@ -35,6 +35,8 @@ SenzaComponents:
           S3_BUCKET: "{{Arguments.ExhibitorBucket}}"
           S3_PREFIX: "{{Arguments.version}}"
         scalyr_account_key: "{{Arguments.ScalyrAccountKey}}"
+        application_logrotate_size: 100M
+        application_logrotate_rotate: 4
       Type: Senza::TaupageAutoScalingGroup
       AutoScaling:
         Minimum: 3
