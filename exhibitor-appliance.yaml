@@ -79,6 +79,10 @@ Resources:
           FromPort: 8181
           ToPort: 8181
           CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 9100
+          ToPort: 9100
+          CidrIp: 0.0.0.0/0
   ExhibitorLoadBalancer:
     Type: AWS::ElasticLoadBalancing::LoadBalancer
     Properties:
