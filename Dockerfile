@@ -6,7 +6,7 @@ ENV USER zookeeper
 ENV HOME /opt/${USER}
 
 ENV \
-    ZOOKEEPER="http://www.apache.org/dist/zookeeper/zookeeper-3.4.6/zookeeper-3.4.6.tar.gz" \
+    ZOOKEEPER="http://www.apache.org/dist/zookeeper/zookeeper-3.4.7/zookeeper-3.4.7.tar.gz" \
     EXHIBITOR_POM="https://raw.githubusercontent.com/Netflix/exhibitor/master/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml" \
     BUILD_DEPS="maven openjdk-7-jdk+"
 
