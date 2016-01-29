@@ -4,9 +4,10 @@ MAINTAINER Alexander Kukushkin <alexander.kukushkin@zalando.de>
 
 ENV USER zookeeper
 ENV HOME /opt/${USER}
+ENV ZOOKEEPER_VERSION="3.4.6"
 
 ENV \
-    ZOOKEEPER="http://www.apache.org/dist/zookeeper/zookeeper-3.4.7/zookeeper-3.4.7.tar.gz" \
+    ZOOKEEPER="http://www.apache.org/dist/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz" \
     EXHIBITOR_POM="https://raw.githubusercontent.com/Netflix/exhibitor/master/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml" \
     BUILD_DEPS="maven openjdk-7-jdk+"
 
