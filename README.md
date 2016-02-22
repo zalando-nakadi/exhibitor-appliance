@@ -31,3 +31,7 @@ senza create exhibitor-appliance.yaml postgres acid-exhibitor pierone.example.or
 Cloudformation stack will start 3 EC2 instances in autoscaling group and create internal load balancer in front of EC2 instances. Also it will create DNS record ```"<APPLICATION_ID>-<STACK_VERSION>.<HOSTED_ZONE>"``` which points to a load balancer.
 
 Exhibitor provides [rest-api](https://github.com/Netflix/exhibitor/wiki/REST-Introduction) which could be accessd via: ```http://<APPLICATION_ID>-<STACK_VERSION>.<HOSTED_ZONE>/exhibitor/v1/```
+
+###### Access
+
+The provided Yaml file creates only a internal LoadBalancer. For security reasons you should not expose freely the exhibitor interface, since it has by default not authorization. For access you should look into this script: https://github.com/zalando-stups/ssh-tunnels
