@@ -1,7 +1,7 @@
 #/bin/bash -e
 
-HOSTNAME=$(curl http://169.254.169.254/latest/meta-data/hostname)
-AVAILABILITY_ZONE=$(curl http://169.254.169.254/latest/meta-data/placement/availability-zone)
+HOSTNAME=$(curl --connect-timeout 5 http://169.254.169.254/latest/meta-data/hostname || echo "localhost")
+AVAILABILITY_ZONE=$(curl --connect-timeout 5 http://169.254.169.254/latest/meta-data/placement/availability-zone || echo "")
 AWS_REGION=${AVAILABILITY_ZONE:0:${#AVAILABILITY_ZONE} - 1}
 
 # Generates the default exhibitor config and launches exhibitor
@@ -12,6 +12,13 @@ if [[ -n ${ZK_PASSWORD} ]]; then
     SECURITY="--security /opt/exhibitor/web.xml --realm Zookeeper:realm --remoteauth basic:zk"
     echo "zk: ${ZK_PASSWORD},zk" > realm
 fi
+
+if [[ $AVAILABILITY_ZONE == '' ]]; then
+    echo "local environment, starting without S3 backup"
+    CONFIG_TYPE="file"
+else
+    CONFIG_TYPE="s3  --s3config ${S3_BUCKET}:${S3_PREFIX} --s3region ${AWS_REGION} --s3backup true"
+fi 
 
 # send zookeeper log to stdout
 (
@@ -26,7 +33,6 @@ exec 2>&1
 
 java -jar /opt/exhibitor/exhibitor.jar \
   --port 8181 --defaultconfig exhibitor.conf \
-  --configtype s3 --s3config ${S3_BUCKET}:${S3_PREFIX} \
-  --s3region ${AWS_REGION} --s3backup true \
+  --configtype $CONFIG_TYPE \
   --hostname ${HOSTNAME} \
   ${SECURITY}
