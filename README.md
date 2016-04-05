@@ -24,12 +24,12 @@ Make sure that your got an unique ```APPLICATION_ID```
 
 ###### Deploy with Senza
 ```
-senza create exhibitor-appliance.yaml <STACK_VERSION> <APPLICATION_ID> <DOCKER_IMAGE_WITH_VERSION_TAG> <HOSTED_ZONE> $S3_BUCKET <MINT_BUCKET> <SCALYR_KEY> [--region AWS_REGION]
+senza create exhibitor-appliance.yaml <STACK_VERSION> <DOCKER_IMAGE_WITH_VERSION_TAG> <HOSTED_ZONE> $S3_BUCKET <SCALYR_KEY> [--region AWS_REGION]
 ```
 
 A real world example would be:
 ```
-senza create exhibitor-appliance.yaml postgres acid-exhibitor pierone.example.org/myteam/exhibitor:0.1-SNAPSHOT example.org. exhibitor-bucket example-stups-mint-some_id-eu-west-1 some_scalyr_key --region eu-west-1
+senza create exhibitor-appliance.yaml postgres acid-exhibitor DockerImage=registry.opensource.zalan.do/acid/exhibitor:3.4-p4 HostedZone=example.org. ExhibitorBucket=exhibitor-bucket ScalyrAccountKey=some_scalyr_key --region eu-west-1
 ```
 
 Cloudformation stack will start 3 EC2 instances in autoscaling group and create internal load balancer in front of EC2 instances. Also it will create DNS record ```"<APPLICATION_ID>-<STACK_VERSION>.<HOSTED_ZONE>"``` which points to a load balancer.
