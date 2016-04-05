@@ -24,6 +24,7 @@ senza create exhibitor-appliance.yaml <STACK_VERSION> <APPLICATION_ID> <DOCKER_I
 ```
 
 A real world example would be:
+
 	senza create exhibitor-appliance.yaml 1 \
 	ApplicationId=acid-exhibitor \
 	DockerImage=pierone.example.org/myteam/exhibitor:0.1-SNAPSHOT \
