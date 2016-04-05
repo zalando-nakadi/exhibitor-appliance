@@ -24,9 +24,14 @@ senza create exhibitor-appliance.yaml <STACK_VERSION> <APPLICATION_ID> <DOCKER_I
 ```
 
 A real world example would be:
-```
-senza create exhibitor-appliance.yaml postgres acid-exhibitor pierone.example.org/myteam/exhibitor:0.1-SNAPSHOT example.org. exhibitor-bucket example-stups-mint-some_id-eu-west-1 some_scalyr_key --region eu-west-1
-```
+	senza create exhibitor-appliance.yaml 1 \
+	ApplicationId=acid-exhibitor \
+	DockerImage=pierone.example.org/myteam/exhibitor:0.1-SNAPSHOT \
+	HostedZone=example.org. \
+	ExhibitorBucket=exhibitor-bucket \
+	MintBucket=example-stups-mint-some_id-eu-west-1 \
+	ScalyrAccountKey=some_scalyr_key \
+	--region eu-west-1
 
 Cloudformation stack will start 3 EC2 instances in autoscaling group and create internal load balancer in front of EC2 instances. Also it will create DNS record ```"<APPLICATION_ID>-<STACK_VERSION>.<HOSTED_ZONE>"``` which points to a load balancer.
 
@@ -35,3 +40,4 @@ Exhibitor provides [rest-api](https://github.com/Netflix/exhibitor/wiki/REST-Int
 ###### Access
 
 The provided Yaml file creates only a internal LoadBalancer. For security reasons you should not expose freely the exhibitor interface, since it has by default not authorization. For access you should look into this script: https://github.com/zalando-stups/ssh-tunnels
+
