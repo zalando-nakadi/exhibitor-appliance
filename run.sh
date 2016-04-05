@@ -2,7 +2,6 @@
 
 HOSTNAME=$(curl --connect-timeout 5 http://169.254.169.254/latest/meta-data/hostname || echo "localhost")
 AVAILABILITY_ZONE=$(curl --connect-timeout 5 http://169.254.169.254/latest/meta-data/placement/availability-zone || echo "")
-AWS_REGION=${AVAILABILITY_ZONE:0:${#AVAILABILITY_ZONE} - 1}
 
 # Generates the default exhibitor config and launches exhibitor
 cat /opt/exhibitor/exhibitor.conf.tmpl > exhibitor.conf
@@ -17,6 +16,7 @@ if [[ $AVAILABILITY_ZONE == '' ]]; then
     echo "local environment, starting without S3 backup"
     CONFIG_TYPE="file"
 else
+    AWS_REGION=${AVAILABILITY_ZONE:0:${#AVAILABILITY_ZONE} - 1}
     CONFIG_TYPE="s3  --s3config ${S3_BUCKET}:${S3_PREFIX} --s3region ${AWS_REGION} --s3backup true"
 fi 
 
