@@ -2,10 +2,14 @@ Runs an [Exhibitor](https://github.com/Netflix/exhibitor)-managed [ZooKeeper](ht
 
 ### Usage
 
-###### Build docker image and push it into repository
+###### Docker Image
+
+We advise to use the official release in the OpenSource Registry of Zalando. You can find out the latest here:
 ```
-docker build -t <tag> .
+curl -s https://registry.opensource.zalan.do/teams/acid/artifacts/exhibitor/tags | jq "sort_by(.created)"
 ```
+
+If you want to build your own image see here: http://docs.stups.io/en/latest/user-guide/deployment.html#prepare-the-deployment-artifact
 
 ###### Create S3 bucket
 ```
