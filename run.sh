@@ -1,6 +1,6 @@
 #/bin/bash -e
 
-HOSTNAME=$(curl --connect-timeout 5 http://169.254.169.254/latest/meta-data/hostname || echo "localhost")
+HOSTNAME=$(curl --connect-timeout 5 http://169.254.169.254/latest/meta-data/hostname || echo $(hostname))
 AVAILABILITY_ZONE=$(curl --connect-timeout 5 http://169.254.169.254/latest/meta-data/placement/availability-zone || echo "")
 
 # Generates the default exhibitor config and launches exhibitor
