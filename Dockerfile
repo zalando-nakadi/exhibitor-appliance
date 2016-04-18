@@ -37,9 +37,8 @@ RUN \
     && apt-get purge -y --auto-remove $BUILD_DEPS \
     && rm -rf /var/lib/apt/lists/*
 
-ADD web.xml /opt/exhibitor/web.xml
-ADD run.sh /opt/exhibitor/run.sh
-ADD exhibitor.conf.tmpl /opt/exhibitor/exhibitor.conf.tmpl
+COPY run.sh web.xml exhibitor.conf.tmpl /opt/exhibitor/
+COPY scm-source.json /scm-source.json
 
 WORKDIR ${HOME}
 USER ${USER}
