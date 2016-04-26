@@ -1,14 +1,21 @@
 SenzaInfo:
   StackName: exhibitor
   Parameters:
-    - DockerImage:
-        Description: Docker image of exhibitor
+    - DockerVersion:
+        Description: "Docker image version of lawang."
+    - DockerBaseImage:
+        Description: "Docker image path of lawang."
+        Default: "registry.opensource.zalan.do/acid/exhibitor"
     - HostedZone:
         Description: AWS Hosted Zone to work with
     - ExhibitorBucket:
         Description: S3 bucket for exhibitor (to store shared configuration and backups)
     - ScalyrAccountKey:
         Description: Scalyr account key
+        Default: ""
+    - ApplicationID:
+        Description: "The Application Id which got registered for lawang in Yourturn/Kio."
+        Default: ""
 SenzaComponents:
   - Configuration:
       Type: Senza::StupsAutoConfiguration
@@ -23,8 +30,10 @@ SenzaComponents:
             - ExhibitorSecurityGroup
             - GroupId
       TaupageConfig:
+        application_id: "{{Arguments.ApplicationID}}"
+        application_version: "{{Arguments.DockerVersion}}"
         runtime: Docker
-        source: "{{Arguments.DockerImage}}"
+        source: "{{Arguments.DockerBaseImage}}:{{Arguments.DockerVersion}}"
         ports:
           2181: 2181
           2888: 2888
