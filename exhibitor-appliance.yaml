@@ -2,9 +2,9 @@ SenzaInfo:
   StackName: exhibitor
   Parameters:
     - DockerVersion:
-        Description: "Docker image version of lawang."
+        Description: "Docker image version of exhibitor."
     - DockerBaseImage:
-        Description: "Docker image path of lawang."
+        Description: "Docker image path of exhibitor."
         Default: "registry.opensource.zalan.do/acid/exhibitor"
     - HostedZone:
         Description: AWS Hosted Zone to work with
@@ -15,7 +15,7 @@ SenzaInfo:
         Default: ""
     - ApplicationID:
         Description: "The Application Id which got registered for lawang in Yourturn/Kio."
-        Default: ""
+        Default: "exhibitor"
 SenzaComponents:
   - Configuration:
       Type: Senza::StupsAutoConfiguration
