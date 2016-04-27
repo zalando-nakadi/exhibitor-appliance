@@ -4,9 +4,10 @@ Runs an [Exhibitor](https://github.com/Netflix/exhibitor)-managed [ZooKeeper](ht
 
 ###### Docker Image
 
-We advise to use the official release in the OpenSource Registry of Zalando. You can find out the latest here:
+We advise to use the official release in the OpenSource Registry of Zalando. You can find out the latest here ([pierone-cli](https://github.com/zalando-stups/pierone-cli) must be installed):
 ```
-curl -s https://registry.opensource.zalan.do/teams/acid/artifacts/exhibitor/tags | jq "sort_by(.created)"
+DOCKER_BASE_IMAGE="registry.opensource.zalan.do/acid/exhibitor"
+DOCKER_IMAGE_VERSION=$(pierone latest acid exhibitor --url registry.opensource.zalan.do)"
 ```
 
 If you want to build your own image see here: http://docs.stups.io/en/latest/user-guide/deployment.html#prepare-the-deployment-artifact
@@ -25,20 +26,24 @@ Make sure that your got an unique ```APPLICATION_ID```
 ###### Deploy with Senza
 ```
 senza create exhibitor-appliance.yaml <STACK_VERSION> \
-  DockerImage=<DOCKER_IMAGE_WITH_VERSION_TAG> \
+  DockerBaseImage=$DOCKER_BASE_IMAGE \
+  DockerVersion=$DOCKER_IMAGE_VERSION \
   HostedZone=<HOSTED_ZONE> \
   ExhibitorBucket=$S3_BUCKET \
   ScalyrAccountKey=<SCALYR_KEY> \
+  ApplicationID=<APPLICATION_ID> \
   [--region AWS_REGION]
 ```
 
 A real world example would be:
 ```
 senza create exhibitor-appliance.yaml acid-exhibitor \
-  DockerImage=registry.opensource.zalan.do/acid/exhibitor:3.4-p5 \
+  DockerBaseImage=registry.opensource.zalan.do/acid/exhibitor \
+  DockerVersion=3.4-p5 \
   HostedZone=example.org. \
   ExhibitorBucket=exhibitor-bucket \
   ScalyrAccountKey=some_scalyr_key \
+  ApplicationID=exhibitor \
   --region eu-west-1
 ```
 
