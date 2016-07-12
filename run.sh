@@ -1,6 +1,11 @@
 #/bin/bash -e
 
-HOSTNAME=$(curl --connect-timeout 5 http://169.254.169.254/latest/meta-data/hostname || echo $(hostname))
+if [[ "x$USE_HOSTNAME" == "xyes" ]]; then
+    HOSTNAME=$(curl --connect-timeout 5 http://169.254.169.254/latest/meta-data/hostname || echo $(hostname))
+else
+    HOSTNAME=$(curl --connect-timeout 5 http://169.254.169.254/latest/meta-data/local-ipv4 || echo $(hostname))
+fi
+
 AVAILABILITY_ZONE=$(curl --connect-timeout 5 http://169.254.169.254/latest/meta-data/placement/availability-zone || echo "")
 
 # Generates the default exhibitor config and launches exhibitor
@@ -16,7 +21,9 @@ if [[ $AVAILABILITY_ZONE == '' ]]; then
     echo "local environment, starting without S3 backup"
     CONFIG_TYPE="file"
 else
-    AWS_REGION=${AVAILABILITY_ZONE:0:${#AVAILABILITY_ZONE} - 1}
+    if [[ "x$AWS_REGION" == "x" ]]; then
+        AWS_REGION=${AVAILABILITY_ZONE:0:${#AVAILABILITY_ZONE} - 1}
+    fi
     CONFIG_TYPE="s3  --s3config ${S3_BUCKET}:${S3_PREFIX} --s3region ${AWS_REGION} --s3backup true"
 fi 
 
