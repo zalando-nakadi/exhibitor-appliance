@@ -16,6 +16,12 @@ SenzaInfo:
     - ApplicationID:
         Description: "The Application Id which got registered for lawang in Yourturn/Kio."
         Default: "exhibitor"
+    - UseHostName:
+        Description: "Use hostname to configure exhibitor. If not - ip address will be used"
+        Default: "yes"
+    - CustomS3BucketRegion:
+        Description: "Use custom s3 bucket region for exhibitor configuration"
+        Default: ""
 SenzaComponents:
   - Configuration:
       Type: Senza::StupsAutoConfiguration
@@ -40,9 +46,11 @@ SenzaComponents:
           3888: 3888
           8181: 8181
         root: True
-        environment:
+      environment:
           S3_BUCKET: "{{Arguments.ExhibitorBucket}}"
           S3_PREFIX: "{{Arguments.version}}"
+          USE_HOSTNAME: "{{Arguments.UseHostName}}"
+          AWS_REGION: "{{Arguments.CustomS3BucketRegion}}"
         scalyr_account_key: "{{Arguments.ScalyrAccountKey}}"
         application_logrotate_size: 100M
         application_logrotate_rotate: 4
