@@ -46,7 +46,7 @@ SenzaComponents:
           3888: 3888
           8181: 8181
         root: True
-      environment:
+        environment:
           S3_BUCKET: "{{Arguments.ExhibitorBucket}}"
           S3_PREFIX: "{{Arguments.version}}"
           USE_HOSTNAME: "{{Arguments.UseHostName}}"
