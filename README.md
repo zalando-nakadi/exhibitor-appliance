@@ -30,7 +30,6 @@ senza create exhibitor-appliance.yaml <STACK_VERSION> \
   DockerVersion=$DOCKER_IMAGE_VERSION \
   HostedZone=<HOSTED_ZONE> \
   ExhibitorBucket=$S3_BUCKET \
-  ScalyrAccountKey=<SCALYR_KEY> \
   ApplicationID=<APPLICATION_ID> \
   [--region AWS_REGION]
 ```
@@ -39,10 +38,9 @@ A real world example would be:
 ```
 senza create exhibitor-appliance.yaml acid-exhibitor \
   DockerBaseImage=registry.opensource.zalan.do/acid/exhibitor \
-  DockerVersion=3.4-p5 \
+  DockerVersion=3.4-p8 \
   HostedZone=example.org. \
   ExhibitorBucket=exhibitor-bucket \
-  ScalyrAccountKey=some_scalyr_key \
   ApplicationID=exhibitor \
   --region eu-west-1
 ```
