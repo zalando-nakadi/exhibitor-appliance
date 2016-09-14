@@ -10,9 +10,6 @@ SenzaInfo:
         Description: AWS Hosted Zone to work with
     - ExhibitorBucket:
         Description: S3 bucket for exhibitor (to store shared configuration and backups)
-    - ScalyrAccountKey:
-        Description: Scalyr account key
-        Default: ""
     - ApplicationID:
         Description: "The Application Id which got registered for lawang in Yourturn/Kio."
         Default: "exhibitor"
@@ -51,7 +48,7 @@ SenzaComponents:
           S3_PREFIX: "{{Arguments.version}}"
           USE_HOSTNAME: "{{Arguments.UseHostName}}"
           AWS_REGION: "{{Arguments.CustomS3BucketRegion}}"
-        scalyr_account_key: "{{Arguments.ScalyrAccountKey}}"
+        appdynamics_application: '{{Arguments.ApplicationID}}-{{Arguments.version}}'
         application_logrotate_size: 100M
         application_logrotate_rotate: 4
       Type: Senza::TaupageAutoScalingGroup
