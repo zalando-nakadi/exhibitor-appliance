@@ -38,7 +38,7 @@ A real world example would be:
 ```
 senza create exhibitor-appliance.yaml acid-exhibitor \
   DockerBaseImage=registry.opensource.zalan.do/acid/exhibitor \
-  DockerVersion=3.4-p8 \
+  DockerVersion=3.4-p9 \
   HostedZone=example.org. \
   ExhibitorBucket=exhibitor-bucket \
   ApplicationID=exhibitor \
