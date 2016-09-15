@@ -8,7 +8,7 @@ ENV HOME /opt/${USER}
 # Create home directory for zookeeper
 RUN useradd -d ${HOME} -k /etc/skel -s /bin/bash -m ${USER}
 
-ENV ZOOKEEPER_VERSION="3.4.6"
+ENV ZOOKEEPER_VERSION="3.4.9"
 
 ENV \
     ZOOKEEPER="http://www.apache.org/dist/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz" \
