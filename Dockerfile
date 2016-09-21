@@ -12,7 +12,7 @@ ENV ZOOKEEPER_VERSION="3.4.9"
 
 ENV \
     ZOOKEEPER="http://www.apache.org/dist/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz" \
-    EXHIBITOR_POM="https://raw.githubusercontent.com/Netflix/exhibitor/master/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml" \
+    EXHIBITOR_POM="https://raw.githubusercontent.com/zalando-incubator/exhibitor/master/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml" \
     BUILD_DEPS="maven openjdk-7-jdk+"
 
 RUN export DEBIAN_FRONTEND=noninteractive \
