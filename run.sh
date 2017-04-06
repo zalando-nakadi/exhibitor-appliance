@@ -8,9 +8,24 @@ fi
 
 AVAILABILITY_ZONE=$(curl --connect-timeout 5 http://169.254.169.254/latest/meta-data/placement/availability-zone || echo "")
 
+# creates snapshot and transactions directory if not present. Some
+# users mount empty formatted volumes for data storage, so the
+# directories need to be created on startup.
+if [[ "x$TRANSACTIONS_DIR" == "x" ]]; then
+    TRANSACTIONS_DIR="/opt/zookeeper/transactions"
+fi
+mkdir -m 777 -p ${TRANSACTIONS_DIR}
+if [[ "x$SNAPSHOTS_DIR" == "x" ]]; then
+   SNAPSHOTS_DIR="/opt/zookeeper/transactions"
+fi
+mkdir -m 777 -p ${SNAPSHOTS_DIR}
+
 # Generates the default exhibitor config and launches exhibitor
 cat /opt/exhibitor/exhibitor.conf.tmpl > exhibitor.conf
 echo "backup-extra=throttle\=&bucket-name\=${S3_BUCKET}&key-prefix\=${S3_PREFIX}&max-retries\=4&retry-sleep-ms\=30000" >> exhibitor.conf
+echo "zookeeper-data-directory=${SNAPSHOTS_DIR}" >> exhibitor.conf
+echo "zookeeper-log-directory=${TRANSACTIONS_DIR}" >> exhibitor.conf
+echo "log-index-directory=${TRANSACTIONS_DIR}" >> exhibitor.conf
 
 if [[ -n ${ZK_PASSWORD} ]]; then
     SECURITY="--security /opt/exhibitor/web.xml --realm Zookeeper:realm --remoteauth basic:zk"
