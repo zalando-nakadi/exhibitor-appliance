@@ -21,10 +21,10 @@ SenzaInfo:
         Default: ""
     - CustomTransactionsDirectory:
         Description: "Use custom transactions directory"
-        Default: "/opt/exhibitor/transactions"
+        Default: "/opt/zookeeper/transactions"
     - CustomSnapshotsDirectory:
         Description: "Use custom snapshots directory"
-        Default: "/opt/exhibitor/snapshots"
+        Default: "/opt/zookeeper/snapshots"
 SenzaComponents:
   - Configuration:
       Type: Senza::StupsAutoConfiguration
