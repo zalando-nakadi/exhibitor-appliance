@@ -16,7 +16,7 @@ if [[ "x$TRANSACTIONS_DIR" == "x" ]]; then
 fi
 mkdir -m 777 -p ${TRANSACTIONS_DIR}
 if [[ "x$SNAPSHOTS_DIR" == "x" ]]; then
-   SNAPSHOTS_DIR="/opt/zookeeper/transactions"
+   SNAPSHOTS_DIR="/opt/zookeeper/snapshots"
 fi
 mkdir -m 777 -p ${SNAPSHOTS_DIR}
 
