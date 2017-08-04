@@ -43,9 +43,10 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /root/.m2
 
+RUN ln -sf /dev/stdout /opt/zookeeper/zookeeper.out
 COPY run.sh web.xml exhibitor.conf.tmpl /opt/exhibitor/
 COPY scm-source.json /scm-source.json
-
+RUN ln -sf /dev/stdout /opt/zookeeper/zookeeper.out
 WORKDIR ${HOME}
 USER ${USER}
 
