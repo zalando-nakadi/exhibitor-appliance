@@ -40,16 +40,9 @@ else
         AWS_REGION=${AVAILABILITY_ZONE:0:${#AVAILABILITY_ZONE} - 1}
     fi
     CONFIG_TYPE="s3  --s3config ${S3_BUCKET}:${S3_PREFIX} --s3region ${AWS_REGION} --s3backup true"
-fi 
+fi
 
 # send zookeeper log to stdout
-(
-    ZK_LOG=zookeeper.out
-    while true; do
-        [[ -f $ZK_LOG ]] && tailf $ZK_LOG
-        sleep 1
-    done
-) &
 
 exec 2>&1
 
