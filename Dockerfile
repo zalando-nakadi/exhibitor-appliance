@@ -22,7 +22,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
 
     && apt-get update \
     && apt-get upgrade -y \
-    && apt-get install -y --allow-unauthenticated $BUILD_DEPS curl \
+    && apt-get install -y --allow-unauthenticated $BUILD_DEPS curl wget \
 
     # Default DNS cache TTL is -1. DNS records, like, change, man.
     && grep '^networkaddress.cache.ttl=' /etc/java-7-openjdk/security/java.security || echo 'networkaddress.cache.ttl=60' >> /etc/java-7-openjdk/security/java.security \
@@ -41,7 +41,10 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get purge -y --auto-remove $BUILD_DEPS \
     && apt-get autoremove -y \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /root/.m2
+    && rm -rf /var/lib/apt/lists/* /root/.m2 \
+
+    # jolokia
+    && wget -q -O /opt/jolokia-jvm-1.3.7-agent.jar "http://search.maven.org/remotecontent?filepath=org/jolokia/jolokia-jvm/1.3.7/jolokia-jvm-1.3.7-agent.jar"
 
 COPY run.sh web.xml exhibitor.conf.tmpl /opt/exhibitor/
 COPY scm-source.json /scm-source.json
@@ -49,6 +52,6 @@ COPY scm-source.json /scm-source.json
 WORKDIR ${HOME}
 USER ${USER}
 
-EXPOSE 2181 2888 3888 8181
+EXPOSE 2181 2888 3888 8181 8778
 
 ENTRYPOINT ["bash", "-ex", "/opt/exhibitor/run.sh"]

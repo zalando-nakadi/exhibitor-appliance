@@ -53,7 +53,7 @@ fi
 
 exec 2>&1
 
-java -jar /opt/exhibitor/exhibitor.jar \
+java -javaagent:/opt/jolokia-jvm-1.3.7-agent.jar=port=8778,host=0.0.0.0 -jar /opt/exhibitor/exhibitor.jar \
   --port 8181 --defaultconfig exhibitor.conf \
   --configtype $CONFIG_TYPE \
   --hostname ${HOSTNAME} \
