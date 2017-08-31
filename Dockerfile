@@ -10,6 +10,8 @@ RUN useradd -d ${HOME} -k /etc/skel -s /bin/bash -m ${USER}
 
 ENV ZOOKEEPER_VERSION="3.4.10"
 
+ENV JOLOKIA_VERSION="1.3.7-agent"
+
 ENV \
     ZOOKEEPER="http://www.apache.org/dist/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz" \
     EXHIBITOR_POM="https://raw.githubusercontent.com/soabase/exhibitor/master/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml" \
@@ -22,7 +24,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
 
     && apt-get update \
     && apt-get upgrade -y \
-    && apt-get install -y --allow-unauthenticated $BUILD_DEPS curl \
+    && apt-get install -y --allow-unauthenticated $BUILD_DEPS curl wget \
 
     # Default DNS cache TTL is -1. DNS records, like, change, man.
     && grep '^networkaddress.cache.ttl=' /etc/java-7-openjdk/security/java.security || echo 'networkaddress.cache.ttl=60' >> /etc/java-7-openjdk/security/java.security \
@@ -41,7 +43,10 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get purge -y --auto-remove $BUILD_DEPS \
     && apt-get autoremove -y \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /root/.m2
+    && rm -rf /var/lib/apt/lists/* /root/.m2 \
+
+    # jolokia
+    && wget -q -O /opt/jolokia-jvm-${JOLOKIA_VERSION}-agent.jar "http://search.maven.org/remotecontent?filepath=org/jolokia/jolokia-jvm/${JOLOKIA_VERSION}/jolokia-jvm-${JOLOKIA_VERSION}-agent.jar"
 
 COPY run.sh web.xml exhibitor.conf.tmpl /opt/exhibitor/
 COPY scm-source.json /scm-source.json
@@ -49,6 +54,6 @@ COPY scm-source.json /scm-source.json
 WORKDIR ${HOME}
 USER ${USER}
 
-EXPOSE 2181 2888 3888 8181
+EXPOSE 2181 2888 3888 8181 8778
 
 ENTRYPOINT ["bash", "-ex", "/opt/exhibitor/run.sh"]
