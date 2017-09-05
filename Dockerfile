@@ -48,8 +48,12 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     # jolokia
     && wget -q -O /opt/jolokia-jvm-${JOLOKIA_VERSION}-agent.jar "http://search.maven.org/remotecontent?filepath=org/jolokia/jolokia-jvm/${JOLOKIA_VERSION}/jolokia-jvm-${JOLOKIA_VERSION}-agent.jar"
 
+RUN ln -sf /dev/stdout /opt/zookeeper/zookeeper.out
+RUN ln -sf /dev/stdout /opt/zookeeper/zookeeper.log
+RUN cp /opt/zookeeper/conf/log4j.properties /opt/zookeeper
 COPY run.sh web.xml exhibitor.conf.tmpl /opt/exhibitor/
 COPY scm-source.json /scm-source.json
+
 
 WORKDIR ${HOME}
 USER ${USER}
