@@ -10,8 +10,6 @@ RUN useradd -d ${HOME} -k /etc/skel -s /bin/bash -m ${USER}
 
 ENV ZOOKEEPER_VERSION="3.4.10"
 
-ENV JOLOKIA_VERSION="1.3.7-agent"
-
 ENV \
     ZOOKEEPER="http://www.apache.org/dist/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz" \
     EXHIBITOR_POM="https://raw.githubusercontent.com/soabase/exhibitor/master/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml" \
@@ -43,10 +41,11 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get purge -y --auto-remove $BUILD_DEPS \
     && apt-get autoremove -y \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /root/.m2 \
+    && rm -rf /var/lib/apt/lists/* /root/.m2
 
-    # jolokia
-    && wget -q -O /opt/jolokia-jvm-${JOLOKIA_VERSION}-agent.jar "http://search.maven.org/remotecontent?filepath=org/jolokia/jolokia-jvm/${JOLOKIA_VERSION}/jolokia-jvm-${JOLOKIA_VERSION}-agent.jar"
+# Base part of dockerfile should not be modified not to rebuild image for 1 hour
+ENV JOLOKIA_VERSION="1.3.7"
+RUN wget -q -O /opt/jolokia-jvm-${JOLOKIA_VERSION}-agent.jar "http://search.maven.org/remotecontent?filepath=org/jolokia/jolokia-jvm/${JOLOKIA_VERSION}/jolokia-jvm-${JOLOKIA_VERSION}-agent.jar"
 
 COPY run.sh web.xml exhibitor.conf.tmpl /opt/exhibitor/
 COPY scm-source.json /scm-source.json
