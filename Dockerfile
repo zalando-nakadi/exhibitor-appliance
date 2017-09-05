@@ -1,6 +1,6 @@
 FROM ubuntu:14.04
 
-MAINTAINER Alexander Kukushkin <alexander.kukushkin@zalando.de>
+MAINTAINER Dmitry Sorokin <dmitriy.sorokin@zalando.de>
 
 ENV USER zookeeper
 ENV HOME /opt/${USER}

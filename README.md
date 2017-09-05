@@ -6,8 +6,8 @@ Runs an [Exhibitor](https://github.com/Netflix/exhibitor)-managed [ZooKeeper](ht
 
 We advise to use the official release in the OpenSource Registry of Zalando. You can find out the latest here ([pierone-cli](https://github.com/zalando-stups/pierone-cli) must be installed):
 ```
-DOCKER_BASE_IMAGE="registry.opensource.zalan.do/acid/exhibitor"
-DOCKER_IMAGE_VERSION=$(pierone latest acid exhibitor --url registry.opensource.zalan.do)"
+DOCKER_BASE_IMAGE="registry.opensource.zalan.do/aruha/exhibitor-appliance"
+DOCKER_IMAGE_VERSION=$(pierone latest aruha exhibitor-appliance --url registry.opensource.zalan.do)"
 ```
 
 If you want to build your own image see here: http://docs.stups.io/en/latest/user-guide/deployment.html#prepare-the-deployment-artifact
@@ -47,7 +47,7 @@ senza create exhibitor-appliance.yaml acid-exhibitor \
 
 Cloudformation stack will start 3 EC2 instances in autoscaling group and create internal load balancer in front of EC2 instances. Also it will create DNS record ```"<APPLICATION_ID>-<STACK_VERSION>.<HOSTED_ZONE>"``` which points to a load balancer.
 
-Exhibitor provides [rest-api](https://github.com/Netflix/exhibitor/wiki/REST-Introduction) which could be accessd via: ```http://<APPLICATION_ID>-<STACK_VERSION>.<HOSTED_ZONE>/exhibitor/v1/```
+Exhibitor provides [rest-api](https://github.com/soabase/exhibitor/wiki/REST-Introduction) which could be accessd via: ```http://<APPLICATION_ID>-<STACK_VERSION>.<HOSTED_ZONE>/exhibitor/v1/```
 
 ###### Access
 
