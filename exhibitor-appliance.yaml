@@ -5,7 +5,7 @@ SenzaInfo:
         Description: "Docker image version of exhibitor."
     - DockerBaseImage:
         Description: "Docker image path of exhibitor."
-        Default: "registry.opensource.zalan.do/acid/exhibitor"
+        Default: "registry.opensource.zalan.do/aruha/exhibitor-appliance"
     - HostedZone:
         Description: AWS Hosted Zone to work with
     - ExhibitorBucket:
