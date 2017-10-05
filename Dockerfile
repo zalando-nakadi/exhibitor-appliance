@@ -15,8 +15,6 @@ ENV \
     EXHIBITOR_POM="https://raw.githubusercontent.com/soabase/exhibitor/master/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml" \
     BUILD_DEPS="maven openjdk-7-jdk+"
 
-ENV JOLOKIA_VERSION="1.3.7"
-
 RUN export DEBIAN_FRONTEND=noninteractive \
     # Install dependencies
     && echo 'APT::Install-Recommends "0";' > /etc/apt/apt.conf.d/01norecommend \
@@ -46,6 +44,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && rm -rf /var/lib/apt/lists/* /root/.m2
 
 # Base part of dockerfile should not be modified not to rebuild image for 1 hour
+ENV JOLOKIA_VERSION="1.3.7"
 RUN wget -q -O /opt/jolokia-jvm-${JOLOKIA_VERSION}-agent.jar "http://search.maven.org/remotecontent?filepath=org/jolokia/jolokia-jvm/${JOLOKIA_VERSION}/jolokia-jvm-${JOLOKIA_VERSION}-agent.jar"
 
 RUN ln -sf /dev/stdout /opt/zookeeper/zookeeper.out
