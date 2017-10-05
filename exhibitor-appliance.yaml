@@ -49,6 +49,7 @@ SenzaComponents:
           3888: 3888
           8181: 8181
           8778: 8778
+          8779: 8779
         root: True
         environment:
           S3_BUCKET: "{{Arguments.ExhibitorBucket}}"
@@ -109,6 +110,10 @@ Resources:
         - IpProtocol: tcp
           FromPort: 8778
           ToPort: 8778
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 8779
+          ToPort: 8779
           CidrIp: 0.0.0.0/0
   ExhibitorLoadBalancer:
     Type: AWS::ElasticLoadBalancing::LoadBalancer

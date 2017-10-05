@@ -11,3 +11,4 @@ election-port=3888
 zoo-cfg-extra=tickTime\=2000&initLimit\=10&syncLimit\=5&quorumListenOnAllIPs\=true
 auto-manage-instances-settling-period-ms=0
 auto-manage-instances=1
+java-environment=#!/bin/bash \nexport JAVA_TOOL_OPTIONS="-javaagent:/opt/jolokia-jvm-${JOLOKIA_VERSION}-agent.jar=port=8779,host=0.0.0.0"

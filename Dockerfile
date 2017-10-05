@@ -57,6 +57,6 @@ COPY scm-source.json /scm-source.json
 WORKDIR ${HOME}
 USER ${USER}
 
-EXPOSE 2181 2888 3888 8181 8778
+EXPOSE 2181 2888 3888 8181 8778 8779
 
 ENTRYPOINT ["bash", "-ex", "/opt/exhibitor/run.sh"]
